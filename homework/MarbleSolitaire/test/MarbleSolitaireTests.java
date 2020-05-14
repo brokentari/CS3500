@@ -1,5 +1,6 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import cs3500.marblesolitaire.model.hw02.MarbleSolitaireModel;
 import cs3500.marblesolitaire.model.hw02.MarbleSolitaireModelImpl;
@@ -146,11 +147,6 @@ public class MarbleSolitaireTests {
   }
 
   @Test
-  public void testGameOver() {
-    assertFalse(game.isGameOver());
-  }
-
-  @Test
   public void testGetScore() {
     assertEquals(32, game.getScore());
 
@@ -159,5 +155,62 @@ public class MarbleSolitaireTests {
     game.move(5, 2, 3, 2);
 
     assertEquals(30, game.getScore());
+  }
+
+  public void winningBoardHelper() {
+    game.move(1, 3, 3, 3);
+    game.move(2, 5, 2, 3);
+    game.move(0, 4, 2, 4);
+    game.move(3, 4, 1, 4);
+    game.move(5, 4, 3, 4);
+    game.move(4, 6, 4, 4);
+    game.move(4, 3, 4, 5);
+    game.move(2, 6, 4, 6);
+    game.move(4, 6, 4, 4);
+    game.move(2, 2, 2, 4);
+    game.move(2, 0, 2, 2);
+    game.move(4, 1, 4, 3);
+    game.move(4, 3, 4, 5);
+    game.move(4, 5, 2, 5);
+    game.move(2, 5, 2, 3);
+    game.move(2, 3, 2, 1);
+    game.move(6, 2, 4, 2);
+    game.move(3, 2, 5, 2);
+    game.move(6, 4, 6, 2);
+    game.move(6, 2, 4, 2);
+    game.move(4, 0, 2, 0);
+    game.move(2, 0, 2, 2);
+    game.move(0, 2, 0, 4);
+    game.move(0, 4, 2, 4);
+    game.move(2, 4, 4, 4);
+    game.move(1, 2, 3, 2);
+    game.move(3, 2, 5, 2);
+    game.move(5, 2, 5, 4);
+    game.move(5, 4, 3, 4);
+    game.move(3, 4, 3, 2);
+    game.move(3, 1, 3, 3);
+  }
+
+  @Test
+  public void testGameOver() {
+    assertFalse(game.isGameOver());
+    assertEquals(
+        "    O O O\n"
+            + "    O O O\n"
+            + "O O O O O O O\n"
+            + "O O O _ O O O\n"
+            + "O O O O O O O\n"
+            + "    O O O\n"
+            + "    O O O", game.getGameState());
+    winningBoardHelper();
+
+    assertTrue(game.isGameOver());
+    assertEquals("    _ _ _\n"
+        + "    _ _ _\n"
+        + "_ _ _ _ _ _ _\n"
+        + "_ _ _ O _ _ _\n"
+        + "_ _ _ _ _ _ _\n"
+        + "    _ _ _\n"
+        + "    _ _ _", game.getGameState());
   }
 }

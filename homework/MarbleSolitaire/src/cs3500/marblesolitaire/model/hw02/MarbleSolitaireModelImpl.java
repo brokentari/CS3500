@@ -86,8 +86,9 @@ public class MarbleSolitaireModelImpl implements MarbleSolitaireModel {
 
   @Override
   public void move(int fromRow, int fromCol, int toRow, int toCol) {
-    if (Util.isItIllegalMove(this, fromRow, fromCol, toRow, toCol)) {
-      throw new IllegalArgumentException("Illegal move");
+    String possibleIllegalMoveError = Util.isItIllegalMove(this, fromRow, fromCol, toRow, toCol);
+    if (possibleIllegalMoveError != null) {
+      throw new IllegalArgumentException(possibleIllegalMoveError);
     }
 
     board[fromRow][fromCol] = '_';
@@ -104,10 +105,10 @@ public class MarbleSolitaireModelImpl implements MarbleSolitaireModel {
       for (int col = 0; col < board.length; col++) {
         if (board[row][col] == 'O') {
           isGameOver = isGameOver
-              && (Util.isItIllegalMove(this, row, col, row + 2, col)
-              && Util.isItIllegalMove(this, row, col, row, col + 2)
-              && Util.isItIllegalMove(this, row, col, row - 2, col)
-              && Util.isItIllegalMove(this, row, col, row, col - 2));
+              && (Util.isItIllegalMove(this, row, col, row + 2, col) != null
+              && Util.isItIllegalMove(this, row, col, row, col + 2) != null
+              && Util.isItIllegalMove(this, row, col, row - 2, col) != null
+              && Util.isItIllegalMove(this, row, col, row, col - 2) != null);
         }
       }
     }
