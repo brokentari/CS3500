@@ -1,6 +1,8 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import cs3500.marblesolitaire.model.hw02.MarbleSolitaireModel;
 import cs3500.marblesolitaire.model.hw02.MarbleSolitaireModelImpl;
@@ -25,6 +27,46 @@ public class MarbleSolitaireTests {
     game4 = new MarbleSolitaireModelImpl(7, 7, 7);
   }
 
+  @Test
+  public void testValidDefaultConstructor() {
+    try {
+      game = new MarbleSolitaireModelImpl();
+      assertNotEquals(null, game);
+    } catch (Exception e) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testValidEmptyPositionConstructor() {
+    try {
+      game2 = new MarbleSolitaireModelImpl(0, 2);
+      assertNotEquals(null, game2);
+    } catch (Exception e) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testValidArmThicknessConstructor() {
+    try {
+      game3 = new MarbleSolitaireModelImpl(5);
+      assertNotEquals(null, game3);
+    } catch (Exception e) {
+      fail();
+    }
+  }
+
+  @Test
+  public void testFullConstructor() {
+    try {
+      game4 = new MarbleSolitaireModelImpl(7, 7, 7);
+      assertNotEquals(null, game4);
+    } catch (Exception e) {
+      fail();
+    }
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void testEvenArmThickness() {
     MarbleSolitaireModel evenArmThickness = new MarbleSolitaireModelImpl(4);
@@ -37,7 +79,7 @@ public class MarbleSolitaireTests {
 
   @Test(expected = IllegalArgumentException.class)
   public void testInvalidEmptyCell() {
-    MarbleSolitaireModel invalidEmptyCell = new MarbleSolitaireModelImpl(5, 3, 3);
+    MarbleSolitaireModel invalidEmptyCell = new MarbleSolitaireModelImpl(5, 0, 0);
   }
 
   @Test
@@ -144,6 +186,12 @@ public class MarbleSolitaireTests {
   @Test(expected = IllegalArgumentException.class)
   public void testMovingToInvalidSpace() {
     game.move(3, 1, 0, 0);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testMovingOverEmptySpot() {
+    game.move(3, 2, 3, 3);
+    game.move(3, 3, 3, 2);
   }
 
   @Test

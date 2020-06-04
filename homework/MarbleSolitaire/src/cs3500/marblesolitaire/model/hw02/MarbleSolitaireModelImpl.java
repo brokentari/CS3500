@@ -1,15 +1,21 @@
 package cs3500.marblesolitaire.model.hw02;
 
+import cs3500.marblesolitaire.model.hw04.AbstractSolitaireModel;
+
 /**
- * An implementation of the interface {@link MarbleSolitaireModel}.
+ * An implementation of the interface {@link MarbleSolitaireModel}, which allows customization of
+ * the board, such as arm length, or the location of the initial empty space. This board doesn't
+ * allow the player to move
+ * <ul>
+ *   <li>from or to a non-existing board place</li>
+ *   <li>an empty board position</li>
+ *   <li>a marble to an occupied space</li>
+ *   <li>a marble diagonally</li>
+ *   <li>a marble more than two spaces away</li>
+ *   <li>a marble over an empty space</li>
+ * </ul>
  */
-public class MarbleSolitaireModelImpl implements MarbleSolitaireModel {
-
-  final int armThickness;
-  public int numOfMarbles;
-  public int score;
-  char[][] board;
-
+public class MarbleSolitaireModelImpl extends AbstractSolitaireModel {
 
   /**
    * The default constructor for {@link MarbleSolitaireModelImpl}. Default parameters are {@code
@@ -53,96 +59,18 @@ public class MarbleSolitaireModelImpl implements MarbleSolitaireModel {
    * @throws IllegalArgumentException if the empty's slot position's coordinates are non-existent
    */
   public MarbleSolitaireModelImpl(int armThickness, int sRow, int sCol) {
-    this.armThickness = armThickness;
-    numOfMarbles = 0;
-    board = new char[armThickness * 3 - 2][armThickness * 3 - 2];
-
-    if (armThickness % 2 == 0 || armThickness < 3) {
-      throw new IllegalArgumentException("Invalid arm thickness");
-    }
-
-    if (!Util.doesCoordExistInBoard(armThickness, sRow, sCol)) {
-      throw new IllegalArgumentException(
-          String.format("Invalid empty cell position (%d,%d)", sRow, sCol));
-    }
-
-    for (int row = 0; row < board.length; row++) {
-      for (int col = 0; col < board[row].length; col++) {
-        if (Util.doesCoordExistInBoard(armThickness, row, col)) {
-          if (col == sCol && row == sRow) {
-            board[row][col] = '_';
-          } else {
-            board[row][col] = 'O';
-            numOfMarbles++;
-          }
-        } else {
-          board[row][col] = ' ';
-        }
-      }
-    }
-
-    score = numOfMarbles;
+    // created a more abstract way of generating the model using helper methods
+    super(new BoardElement[armThickness * 3 - 2][armThickness * 3 - 2],
+        armThickness, sRow, sCol);
   }
 
+  // Moved all the methods from this implementation to the abstract class
   @Override
-  public void move(int fromRow, int fromCol, int toRow, int toCol) {
-    String possibleIllegalMoveError = Util.isItIllegalMove(this, fromRow, fromCol, toRow, toCol);
-    if (possibleIllegalMoveError != null) {
-      throw new IllegalArgumentException(possibleIllegalMoveError);
-    }
-
-    board[fromRow][fromCol] = '_';
-    board[toRow][toCol] = 'O';
-    board[fromRow + ((toRow - fromRow) / 2)][fromCol + ((toCol - fromCol) / 2)] = '_';
-    this.numOfMarbles--;
-    this.score--;
+  protected boolean doesCoordinateExistInBoard(int row, int col) {
+    return (isBetween(col, armThickness - 2, armThickness * 2 - 1)
+        && isBetween(row, -1, armThickness * 3 - 2))
+        || (isBetween(row, armThickness - 2, armThickness * 2 - 1)
+        && isBetween(col, -1, armThickness * 3 - 2));
   }
 
-  @Override
-  public boolean isGameOver() {
-    boolean isGameOver = true;
-    for (int row = 0; row < board.length; row++) {
-      for (int col = 0; col < board.length; col++) {
-        if (board[row][col] == 'O') {
-          isGameOver = isGameOver
-              && (Util.isItIllegalMove(this, row, col, row + 2, col) != null
-              && Util.isItIllegalMove(this, row, col, row, col + 2) != null
-              && Util.isItIllegalMove(this, row, col, row - 2, col) != null
-              && Util.isItIllegalMove(this, row, col, row, col - 2) != null);
-        }
-      }
-    }
-
-    return isGameOver;
-  }
-
-  @Override
-  public String getGameState() {
-    String gameState = "";
-
-    for (int row = 0; row < board.length; row++) {
-      String currRow = Character.toString(board[row][0]);
-
-      for (int col = 1; col < board[row].length; col++) {
-        if (((board[row][col - 1] == 'O' || board[row][col - 1] == '_')
-            && board[row][col] == ' ')) {
-          break;
-        }
-        currRow = String.join(" ", currRow, Character.toString(board[row][col]));
-      }
-
-      if (row == 0) {
-        gameState += currRow;
-      } else {
-        gameState = String.join("\n", gameState, currRow);
-      }
-    }
-
-    return gameState;
-  }
-
-  @Override
-  public int getScore() {
-    return this.score;
-  }
 }
