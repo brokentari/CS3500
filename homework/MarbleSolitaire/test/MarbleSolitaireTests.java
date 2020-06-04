@@ -157,7 +157,7 @@ public class MarbleSolitaireTests {
     assertEquals(30, game.getScore());
   }
 
-  public void winningBoardHelper() {
+  private void winningBoardHelper() {
     game.move(1, 3, 3, 3);
     game.move(2, 5, 2, 3);
     game.move(0, 4, 2, 4);
